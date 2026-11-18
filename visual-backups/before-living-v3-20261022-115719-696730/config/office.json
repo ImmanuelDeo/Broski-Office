@@ -1,0 +1,196 @@
+{
+  "name": "Nexus · Hermes Office",
+  "mode": "live",
+  "port": 8765,
+  "max_parallel": 2,
+  "task_timeout_seconds": 1200,
+  "hermes_command": [
+    "hermes"
+  ],
+  "hermes_chat_args": [
+    "chat",
+    "--query-file",
+    "{prompt_file}"
+  ],
+  "memory_context_bytes": 24000,
+  "memory_sources": [
+    {
+      "id": "hermes-memory",
+      "path": "C:/Users/deoim/AppData/Local/hermes/memories/MEMORY.md"
+    },
+    {
+      "id": "hermes-user",
+      "path": "C:/Users/deoim/AppData/Local/hermes/memories/USER.md"
+    }
+  ],
+  "teams": [
+    {
+      "id": "creative",
+      "name": "Creative Studio",
+      "description": "Editor paralel → pemeriksaan brand → tinjauan pengguna",
+      "color": "#b6a1ff",
+      "icon": "film",
+      "agents": [
+        {
+          "id": "editor-1",
+          "name": "Nova",
+          "role": "Clip Editor",
+          "stage": "worker",
+          "profile": "office-nova",
+          "model": "",
+          "prompt": "prompts/clip-editor.md",
+          "avatar": {
+            "skin": "#e9b491",
+            "hair": "#302b4a",
+            "shirt": "#b6a1ff"
+          }
+        },
+        {
+          "id": "editor-2",
+          "name": "Pixel",
+          "role": "Clip Editor",
+          "stage": "worker",
+          "profile": "office-pixel",
+          "model": "",
+          "prompt": "prompts/clip-editor.md",
+          "avatar": {
+            "skin": "#d7a680",
+            "hair": "#242c36",
+            "shirt": "#91dfc8"
+          }
+        },
+        {
+          "id": "brand",
+          "name": "Sage",
+          "role": "Brand Checker",
+          "stage": "reviewer",
+          "profile": "office-sage",
+          "model": "",
+          "prompt": "prompts/brand-checker.md",
+          "avatar": {
+            "skin": "#f1c4aa",
+            "hair": "#684a36",
+            "shirt": "#f1b477"
+          }
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "name": "Research Lab",
+      "description": "Penelusuran bukti dan sintesis dengan pemeriksaan sumber",
+      "color": "#73d6c5",
+      "icon": "search",
+      "agents": [
+        {
+          "id": "analyst",
+          "name": "Atlas",
+          "role": "Research Analyst",
+          "stage": "worker",
+          "profile": "office-atlas",
+          "model": "",
+          "prompt": "prompts/researcher.md",
+          "avatar": {
+            "skin": "#ca9274",
+            "hair": "#29323c",
+            "shirt": "#73d6c5"
+          }
+        },
+        {
+          "id": "research-review",
+          "name": "Lyra",
+          "role": "Evidence Reviewer",
+          "stage": "reviewer",
+          "profile": "office-lyra",
+          "model": "",
+          "prompt": "prompts/reviewer.md",
+          "avatar": {
+            "skin": "#e9bb9e",
+            "hair": "#643f35",
+            "shirt": "#8faee8"
+          }
+        }
+      ]
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering",
+      "description": "Implementasi terarah, pemeriksaan kode, dan hasil uji",
+      "color": "#88bafa",
+      "icon": "code",
+      "agents": [
+        {
+          "id": "builder",
+          "name": "Axel",
+          "role": "Software Engineer",
+          "stage": "worker",
+          "profile": "office-axel",
+          "model": "",
+          "prompt": "prompts/engineer.md",
+          "avatar": {
+            "skin": "#edbd97",
+            "hair": "#34404f",
+            "shirt": "#88bafa"
+          }
+        },
+        {
+          "id": "code-review",
+          "name": "Echo",
+          "role": "Code Reviewer",
+          "stage": "reviewer",
+          "profile": "office-echo",
+          "model": "",
+          "prompt": "prompts/reviewer.md",
+          "avatar": {
+            "skin": "#bb8266",
+            "hair": "#282c38",
+            "shirt": "#a29cf1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations",
+      "description": "Perencanaan, koordinasi, dan pemeriksaan keluaran",
+      "color": "#e8b77a",
+      "icon": "layers",
+      "agents": [
+        {
+          "id": "planner",
+          "name": "Orion",
+          "role": "Task Planner",
+          "stage": "worker",
+          "profile": "office-orion",
+          "model": "",
+          "prompt": "prompts/planner.md",
+          "avatar": {
+            "skin": "#e3aa85",
+            "hair": "#3c3040",
+            "shirt": "#e8b77a"
+          }
+        },
+        {
+          "id": "ops-review",
+          "name": "Mira",
+          "role": "Quality Reviewer",
+          "stage": "reviewer",
+          "profile": "office-mira",
+          "model": "",
+          "prompt": "prompts/reviewer.md",
+          "avatar": {
+            "skin": "#f0c3a5",
+            "hair": "#865847",
+            "shirt": "#dd9dba"
+          }
+        }
+      ]
+    }
+  ],
+  "live_ready": true,
+  "hermes_stop_args": [
+    "gateway",
+    "stop"
+  ],
+  "require_result_file": true
+}

@@ -1,0 +1,23 @@
+test_actual_utf8_bytes_and_source_readonly (test_office.OfficeTests.test_actual_utf8_bytes_and_source_readonly) ... ok
+test_bounded_snapshot_utf8 (test_office.OfficeTests.test_bounded_snapshot_utf8) ... ok
+test_cancel_and_invalid_approval (test_office.OfficeTests.test_cancel_and_invalid_approval) ... ok
+test_concurrent_proposals_no_lost_writes (test_office.OfficeTests.test_concurrent_proposals_no_lost_writes) ... ok
+test_configuration_guards (test_office.OfficeTests.test_configuration_guards) ... ok
+test_http_auth_origin_static_and_mcp (test_office.OfficeTests.test_http_auth_origin_static_and_mcp) ... ok
+test_live_nonzero_exit_is_failure (test_office.OfficeTests.test_live_nonzero_exit_is_failure) ... ok
+test_live_receipt_missing_is_not_success (test_office.OfficeTests.test_live_receipt_missing_is_not_success) ... ok
+test_live_requires_explicit_setup (test_office.OfficeTests.test_live_requires_explicit_setup) ... ok
+test_live_subprocess_contract (test_office.OfficeTests.test_live_subprocess_contract) ... ok
+test_live_timeout_is_failure (test_office.OfficeTests.test_live_timeout_is_failure) ... ok
+test_live_valid_receipt (test_office.OfficeTests.test_live_valid_receipt) ... ok
+test_missing_and_binary_sources (test_office.OfficeTests.test_missing_and_binary_sources) ... ok
+test_parallel_workers_then_reviewer_and_approval (test_office.OfficeTests.test_parallel_workers_then_reviewer_and_approval) ... ok
+test_progress_requires_active_task (test_office.OfficeTests.test_progress_requires_active_task) ... ok
+test_proposals_only_after_approval (test_office.OfficeTests.test_proposals_only_after_approval) ... ok
+test_reconciliation_hold_blocks_new_work (test_office.OfficeTests.test_reconciliation_hold_blocks_new_work) ... ok
+test_restart_recovery_no_replay (test_office.OfficeTests.test_restart_recovery_no_replay) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 36.738s
+
+OK

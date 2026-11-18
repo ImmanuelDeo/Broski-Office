@@ -1,0 +1,8 @@
+{
+  "timezone": "Asia/Jakarta",
+  "jobs": [
+    {"id":"daily-research","enabled":false,"at":"08:00","timezone":"Asia/Jakarta","topic":"","sources":[]}
+  ],
+  "facts_refresh": {"enabled":true,"at":"07:30","timezone":"Asia/Jakarta","max_requests_per_day":2},
+  "note": "Research stays disabled until the user specifies a topic. facts_refresh is consumed by the local scheduler integration described in HERMES_SETUP.md."
+}

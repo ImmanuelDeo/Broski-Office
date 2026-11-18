@@ -1,0 +1,29 @@
+{
+  "action": "apply",
+  "destination": "D:\\nexus-office\\web\\nexus-v2",
+  "protected_hashes": {
+    "server.py": "5ff5ba51a7668469d37fd3eabd3ca3df5995f1413d953b5d0c2d5c0281ef27fb",
+    "core.py": "de6e67a6c494f2f0ede24af629787890a6c65d188ca084f6f6e50094ad27d418",
+    "mcp_server.py": "6da6fb697b868a9b2d35c03b52d8a44da6af8ff70996c5412cc70c87448ccec5",
+    "config/office.json": "91e65e3ef8869b080fc194732e36d9726b7aafa0cf47be2bca85ab29609429af",
+    "web/index.html": "a92fa2adfb9c09ba1e31d0977495865d17a4d2f4230384cc3ad863f98532b66e",
+    "web/app.js": "fa5be391bc4ccf6bd520002e65774097f8c078050641d233253df75f1e922cce",
+    "web/scene.js": "98d0e7aeb595fdf044d9b77b5530f50b24abd7cdeca7d6ec8702b5bd245ab545",
+    "web/renderer.js": null,
+    "web/style.css": "68aa7babc72d2fe26219d105278f879ba8856750dfba654d01fe7671e1c73cc4"
+  },
+  "backup": "D:\\nexus-office\\visual-backups\\20261022-062847-111609",
+  "installed_hashes": {
+    "bridge.js": "55dbc4c2410fbbda94bee6be59e4c08d0e80b766a5bfcca99e2d32fc83e9e81d",
+    "demo.css": "619e72a51b2891ef00729bd4547a4a68a611720e9a8abd8e5a3d7a0fc94b5a4a",
+    "demo.html": "cd8533fe51806f2f2b3de56b5dfefac5f79ef28c38c8903f514df934c1070da6",
+    "demo.js": "7d04fefc1f04d38ac0a2e785d5b0e51536c308a3ed60227a447e818a647e53b5",
+    "geometry.js": "1de3316a691c56efc0125c2cae5a41d936c8d43ef5b586e27a0a32c52b218af1",
+    "model.js": "9e8de6b75c3592d338efd9cf5e8bda7107b33f56e663894af0e2591db4711efa",
+    "styles.css": "b8926c2f2c2cc8e897362e628897ed715f5580ef7c260e5acec1ecff8a93bc65",
+    "view.js": "a88fbe98a8ac5e392aa52bf45173093e9b44c12be59d9c2cc0ab5b5363d3c481",
+    "vendor\\OrbitControls.js": "6f3052dd8860a60fe6999260d50558ff54609523724c6e374326228e5590cf55",
+    "vendor\\THREE-LICENSE.txt": "4c40a1ef62450b857c3b2aaf294936304cd552d965fbcd9d32d4c5bcf4ba4454",
+    "vendor\\three.module.js": "ce1fa418de16a19495a9f72495580e3015d7745c296d3ce0485897f902ddedfb"
+  }
+}

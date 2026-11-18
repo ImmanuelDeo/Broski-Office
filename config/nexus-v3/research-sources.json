@@ -1,0 +1,5 @@
+{
+  "allowed_hosts": ["feeds.bbci.co.uk", "www.antaranews.com", "rss.arxiv.org"],
+  "feeds": ["https://feeds.bbci.co.uk/news/world/rss.xml", "https://www.antaranews.com/rss/terkini.xml", "https://rss.arxiv.org/rss/cs.AI"],
+  "note": "Starting sources, not a claim of full web coverage. Check availability on the local network; prefer source APIs/RSS. Mira uses Hermes search for topics not covered by these feeds."
+}

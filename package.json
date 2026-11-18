@@ -1,0 +1,1 @@
+{"name":"nexus-hermes-office","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"python3 server.py --preview --port 4173","test":"python3 -m unittest discover -s tests -v"}}

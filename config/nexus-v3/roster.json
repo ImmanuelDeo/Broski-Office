@@ -1,0 +1,135 @@
+{
+  "schema_version": 3,
+  "active_agent_count": 8,
+  "retire_agent_ids": [
+    "brand"
+  ],
+  "teams": [
+    {
+      "id": "reports",
+      "name": "Academic Atelier",
+      "description": "Praktikum · kerja praktik · proposal · tugas akhir",
+      "color": "#c6b6ef",
+      "center": [
+        -10,
+        -8
+      ],
+      "theme": "library"
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering Studio",
+      "description": "Software · machine learning · sistem · quality assurance",
+      "color": "#91d8cb",
+      "center": [
+        10,
+        -8
+      ],
+      "theme": "laboratory"
+    },
+    {
+      "id": "supervision",
+      "name": "Mission Control",
+      "description": "Checkpoint · recovery · review seluruh tim",
+      "color": "#ebc785",
+      "center": [
+        -10,
+        8
+      ],
+      "theme": "control"
+    },
+    {
+      "id": "intelligence",
+      "name": "Observatory",
+      "description": "Jurnal · artikel · berita nasional dan internasional",
+      "color": "#9bbfed",
+      "center": [
+        10,
+        8
+      ],
+      "theme": "observatory"
+    }
+  ],
+  "agents": [
+    {
+      "id": "analyst",
+      "name": "Atlas",
+      "team": "reports",
+      "role": "Research & report author",
+      "profile": "office-atlas",
+      "skin": "deku",
+      "stage": "worker",
+      "prompt": "prompts/nexus-v3/analyst.md"
+    },
+    {
+      "id": "research-review",
+      "name": "Lyra",
+      "team": "reports",
+      "role": "Methodology & academic editor",
+      "profile": "office-lyra",
+      "skin": "choso",
+      "stage": "reviewer",
+      "prompt": "prompts/nexus-v3/research-review.md"
+    },
+    {
+      "id": "builder",
+      "name": "Axel",
+      "team": "engineering",
+      "role": "Software engineer",
+      "profile": "office-axel",
+      "skin": "levi",
+      "stage": "worker",
+      "prompt": "prompts/nexus-v3/builder.md"
+    },
+    {
+      "id": "code-review",
+      "name": "Echo",
+      "team": "engineering",
+      "role": "QA & technical reviewer",
+      "profile": "office-echo",
+      "skin": "archer",
+      "stage": "reviewer",
+      "prompt": "prompts/nexus-v3/code-review.md"
+    },
+    {
+      "id": "editor-1",
+      "name": "Nova",
+      "team": "engineering",
+      "role": "ML & data engineer",
+      "profile": "office-nova",
+      "skin": "eren",
+      "stage": "worker",
+      "prompt": "prompts/nexus-v3/editor-1.md"
+    },
+    {
+      "id": "editor-2",
+      "name": "Pixel",
+      "team": "engineering",
+      "role": "Systems & integration engineer",
+      "profile": "office-pixel",
+      "skin": "shinei",
+      "stage": "worker",
+      "prompt": "prompts/nexus-v3/editor-2.md"
+    },
+    {
+      "id": "planner",
+      "name": "Orion",
+      "team": "supervision",
+      "role": "Cross-team supervisor",
+      "profile": "office-orion",
+      "skin": "saber",
+      "stage": "supervisor",
+      "prompt": "prompts/nexus-v3/planner.md"
+    },
+    {
+      "id": "ops-review",
+      "name": "Mira",
+      "team": "intelligence",
+      "role": "Daily research & scraping",
+      "profile": "office-mira",
+      "skin": "lancer",
+      "stage": "worker",
+      "prompt": "prompts/nexus-v3/ops-review.md"
+    }
+  ]
+}

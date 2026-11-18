@@ -1,0 +1,11 @@
+.nx-viewport{position:relative;overflow:hidden;min-height:440px;isolation:isolate;background:#142030;border-radius:12px}
+.nx-canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+.nx-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.nx-label{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border:1px solid #94b9c32d;background:#10232cdb;color:#ecf8f5;border-radius:5px;padding:6px 9px;font:500 10px/1.2 system-ui,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:0 3px 9px #0002}
+.nx-label:hover,.nx-label:focus-visible{outline:2px solid #b0f1d7;outline-offset:2px;background:#1d3b43}
+.nx-label-room{font-size:10px;letter-spacing:.03em;padding:8px 13px;border-top:2px solid #9ebbb8}
+.nx-label-brain{font-size:9px;letter-spacing:.13em;color:#b5f8dd;background:#153c3de8;border-color:#84cfb877}
+.nx-label-agent{font-size:9px;padding:3px 6px;background:#12212bbd}
+.nx-label-agent[data-status=working],.nx-label-agent[data-status=reviewing]{border-color:#8ee6c2;color:#b4ffdf}
+.nx-label-agent[data-status=offline],.nx-label-agent[data-status=unknown]{opacity:.55}
+@media(max-width:700px){.nx-label-agent{font-size:8px;padding:2px 3px}.nx-label-room{font-size:8px;padding:4px}.nx-viewport{min-height:400px}}

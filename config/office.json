@@ -1,0 +1,166 @@
+{
+  "name": "Nexus \u00b7 Hermes Office",
+  "mode": "live",
+  "port": 8765,
+  "max_parallel": 2,
+  "task_timeout_seconds": 1200,
+  "hermes_command": [
+    "hermes"
+  ],
+  "hermes_chat_args": [
+    "chat",
+    "--query-file",
+    "{prompt_file}"
+  ],
+  "memory_context_bytes": 24000,
+  "memory_sources": [
+    {
+      "id": "hermes-memory",
+      "path": "C:/Users/deoim/AppData/Local/hermes/memories/MEMORY.md"
+    },
+    {
+      "id": "hermes-user",
+      "path": "C:/Users/deoim/AppData/Local/hermes/memories/USER.md"
+    }
+  ],
+  "teams": [
+    {
+      "id": "reports",
+      "name": "Academic Atelier",
+      "description": "Praktikum \u00b7 kerja praktik \u00b7 proposal \u00b7 tugas akhir",
+      "color": "#c6b6ef",
+      "icon": "search",
+      "agents": [
+        {
+          "id": "analyst",
+          "name": "Atlas",
+          "role": "Research & report author",
+          "stage": "worker",
+          "profile": "office-atlas",
+          "model": "",
+          "prompt": "prompts/nexus-v3/analyst.md",
+          "avatar": {
+            "skin": "deku"
+          }
+        },
+        {
+          "id": "research-review",
+          "name": "Lyra",
+          "role": "Methodology & academic editor",
+          "stage": "reviewer",
+          "profile": "office-lyra",
+          "model": "",
+          "prompt": "prompts/nexus-v3/research-review.md",
+          "avatar": {
+            "skin": "choso"
+          }
+        }
+      ]
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering Studio",
+      "description": "Software \u00b7 machine learning \u00b7 sistem \u00b7 quality assurance",
+      "color": "#91d8cb",
+      "icon": "code",
+      "agents": [
+        {
+          "id": "builder",
+          "name": "Axel",
+          "role": "Software engineer",
+          "stage": "worker",
+          "profile": "office-axel",
+          "model": "",
+          "prompt": "prompts/nexus-v3/builder.md",
+          "avatar": {
+            "skin": "levi"
+          }
+        },
+        {
+          "id": "code-review",
+          "name": "Echo",
+          "role": "QA & technical reviewer",
+          "stage": "reviewer",
+          "profile": "office-echo",
+          "model": "",
+          "prompt": "prompts/nexus-v3/code-review.md",
+          "avatar": {
+            "skin": "archer"
+          }
+        },
+        {
+          "id": "editor-1",
+          "name": "Nova",
+          "role": "ML & data engineer",
+          "stage": "worker",
+          "profile": "office-nova",
+          "model": "",
+          "prompt": "prompts/nexus-v3/editor-1.md",
+          "avatar": {
+            "skin": "eren"
+          }
+        },
+        {
+          "id": "editor-2",
+          "name": "Pixel",
+          "role": "Systems & integration engineer",
+          "stage": "worker",
+          "profile": "office-pixel",
+          "model": "",
+          "prompt": "prompts/nexus-v3/editor-2.md",
+          "avatar": {
+            "skin": "shinei"
+          }
+        }
+      ]
+    },
+    {
+      "id": "supervision",
+      "name": "Mission Control",
+      "description": "Checkpoint \u00b7 recovery \u00b7 review seluruh tim",
+      "color": "#ebc785",
+      "icon": "layers",
+      "agents": [
+        {
+          "id": "planner",
+          "name": "Orion",
+          "role": "Cross-team supervisor",
+          "stage": "supervisor",
+          "profile": "office-orion",
+          "model": "",
+          "prompt": "prompts/nexus-v3/planner.md",
+          "avatar": {
+            "skin": "saber"
+          }
+        }
+      ]
+    },
+    {
+      "id": "intelligence",
+      "name": "Observatory",
+      "description": "Jurnal \u00b7 artikel \u00b7 berita nasional dan internasional",
+      "color": "#9bbfed",
+      "icon": "search",
+      "agents": [
+        {
+          "id": "ops-review",
+          "name": "Mira",
+          "role": "Daily research & scraping",
+          "stage": "worker",
+          "profile": "office-mira",
+          "model": "",
+          "prompt": "prompts/nexus-v3/ops-review.md",
+          "avatar": {
+            "skin": "lancer"
+          }
+        }
+      ]
+    }
+  ],
+  "live_ready": true,
+  "hermes_stop_args": [
+    "gateway",
+    "stop"
+  ],
+  "require_result_file": true
+}

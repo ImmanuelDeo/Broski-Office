@@ -1,0 +1,4 @@
+[
+ {"id":"web-1989","text":"Tim Berners-Lee menciptakan World Wide Web pada 1989 saat bekerja di CERN.","reply":"Dokumentasi dan riset punya sejarah panjang di web.","source":"CERN","url":"https://home.cern/science/computing/the-birth-of-the-web","verified_at":"2026-10-22","kind":"evergreen","evidence":"Tim Berners-Lee, a British scientist, invented the World Wide Web (WWW) in 1989, while working at CERN."},
+ {"id":"venus-moon","text":"Venus tidak mempunyai bulan alami.","reply":"Bumi mempunyai satu Bulan.","source":"NASA","url":"https://science.nasa.gov/venus/venus-facts/","verified_at":"2026-10-22","kind":"evergreen","evidence":"Venus is one of only two planets in our solar system that doesn't have a moon"}
+]
