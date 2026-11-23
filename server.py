@@ -11,6 +11,7 @@ import secrets
 import threading
 from urllib.parse import urlparse, parse_qs, unquote
 from core import Office, ROOT
+import hermes_console
 
 class Server(ThreadingHTTPServer):
     daemon_threads=True
@@ -52,6 +53,7 @@ class Handler(BaseHTTPRequestHandler):
             o=self.server.office
             if p=='/api/state': return self.send(200,o.state())
             if p=='/api/brain': return self.send(200,o.brain(parse_qs(u.query).get('q',[''])[0]))
+            if p=='/api/hermes/overview': return self.send(200,hermes_console.overview(parse_qs(u.query).get('refresh',[''])[0]=='1'))
             if p.startswith('/api/tasks/'):
                 rows=o.rows('SELECT * FROM tasks WHERE id=?',(p.rsplit('/',1)[-1],))
                 return self.send(200,rows[0]) if rows else self.send(404,{'error':'Task tidak ada'})
@@ -74,6 +76,12 @@ class Handler(BaseHTTPRequestHandler):
             elif p=='/api/memory/decide': o.decide_memory(body['id'],body['decision'])
             elif p=='/api/memory/sync': o.sync_memory()
             elif p=='/api/progress': o.progress(body['id'],body['progress'],body.get('message',''))
+            elif p=='/api/hermes/chat':
+                r=hermes_console.chat(body.get('prompt'),body.get('resume'),body.get('model'),body.get('provider'))
+                return self.send(200 if r['ok'] else 502,r)
+            elif p=='/api/hermes/act':
+                r=hermes_console.act(body.get('action'))
+                return self.send(200 if r['ok'] else 502,r)
             else: return self.send(404,{'error':'API tidak ada'})
             return self.send(200,{'ok':True})
         except (ValueError,KeyError,TypeError) as e: self.send(400,{'error':str(e)})

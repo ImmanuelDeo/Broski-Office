@@ -33,7 +33,7 @@
       "agents": [
         {
           "id": "analyst",
-          "name": "Atlas",
+          "name": "Izuku Midoriya",
           "role": "Research & report author",
           "stage": "worker",
           "profile": "office-atlas",
@@ -45,7 +45,7 @@
         },
         {
           "id": "research-review",
-          "name": "Lyra",
+          "name": "Choso",
           "role": "Methodology & academic editor",
           "stage": "reviewer",
           "profile": "office-lyra",
@@ -66,7 +66,7 @@
       "agents": [
         {
           "id": "builder",
-          "name": "Axel",
+          "name": "Levi Ackerman",
           "role": "Software engineer",
           "stage": "worker",
           "profile": "office-axel",
@@ -78,7 +78,7 @@
         },
         {
           "id": "code-review",
-          "name": "Echo",
+          "name": "EMIYA",
           "role": "QA & technical reviewer",
           "stage": "reviewer",
           "profile": "office-echo",
@@ -90,7 +90,7 @@
         },
         {
           "id": "editor-1",
-          "name": "Nova",
+          "name": "Eren Yeager",
           "role": "ML & data engineer",
           "stage": "worker",
           "profile": "office-nova",
@@ -102,7 +102,7 @@
         },
         {
           "id": "editor-2",
-          "name": "Pixel",
+          "name": "Shinei Nouzen",
           "role": "Systems & integration engineer",
           "stage": "worker",
           "profile": "office-pixel",
@@ -123,7 +123,7 @@
       "agents": [
         {
           "id": "planner",
-          "name": "Orion",
+          "name": "Artoria Pendragon",
           "role": "Cross-team supervisor",
           "stage": "supervisor",
           "profile": "office-orion",
@@ -144,7 +144,7 @@
       "agents": [
         {
           "id": "ops-review",
-          "name": "Mira",
+          "name": "Cú Chulainn",
           "role": "Daily research & scraping",
           "stage": "worker",
           "profile": "office-mira",

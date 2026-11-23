@@ -6,14 +6,14 @@ export const TEAMS = [
   {id:'intelligence',name:'Observatory',description:'Jurnal · artikel · berita nasional dan internasional',color:'#9bbfed',center:[10,8],theme:'observatory'}
 ];
 export const AGENTS = [
-  {id:'analyst',name:'Atlas',team:'reports',role:'Research & report author',profile:'office-atlas',skin:'deku'},
-  {id:'research-review',name:'Lyra',team:'reports',role:'Methodology & academic editor',profile:'office-lyra',skin:'choso'},
-  {id:'builder',name:'Axel',team:'engineering',role:'Software engineer',profile:'office-axel',skin:'levi'},
-  {id:'code-review',name:'Echo',team:'engineering',role:'QA & technical reviewer',profile:'office-echo',skin:'archer'},
-  {id:'editor-1',name:'Nova',team:'engineering',role:'ML & data engineer',profile:'office-nova',skin:'eren'},
-  {id:'editor-2',name:'Pixel',team:'engineering',role:'Systems & integration engineer',profile:'office-pixel',skin:'shinei'},
-  {id:'planner',name:'Orion',team:'supervision',role:'Cross-team supervisor',profile:'office-orion',skin:'saber'},
-  {id:'ops-review',name:'Mira',team:'intelligence',role:'Daily research & scraping',profile:'office-mira',skin:'lancer'}
+  {id:'analyst',name:'Izuku Midoriya',team:'reports',role:'Research & report author',profile:'office-atlas',skin:'deku'},
+  {id:'research-review',name:'Choso',team:'reports',role:'Methodology & academic editor',profile:'office-lyra',skin:'choso'},
+  {id:'builder',name:'Levi Ackerman',team:'engineering',role:'Software engineer',profile:'office-axel',skin:'levi'},
+  {id:'code-review',name:'EMIYA',team:'engineering',role:'QA & technical reviewer',profile:'office-echo',skin:'archer'},
+  {id:'editor-1',name:'Eren Yeager',team:'engineering',role:'ML & data engineer',profile:'office-nova',skin:'eren'},
+  {id:'editor-2',name:'Shinei Nouzen',team:'engineering',role:'Systems & integration engineer',profile:'office-pixel',skin:'shinei'},
+  {id:'planner',name:'Artoria Pendragon',team:'supervision',role:'Cross-team supervisor',profile:'office-orion',skin:'saber'},
+  {id:'ops-review',name:'Cú Chulainn',team:'intelligence',role:'Daily research & scraping',profile:'office-mira',skin:'lancer'}
 ];
 export const SKINS = {
   eren:{hair:'#392b27',coat:'#50705b',accent:'#b3a590',style:'bun'},

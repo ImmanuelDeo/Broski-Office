@@ -8,10 +8,10 @@ Ruangan 16 × 12 unit menggantikan ukuran acuan 14 × 11. Empat ruangan tetap me
 
 | Ruang | Agen | Palet | Identitas dan objek |
 |---|---|---|---|
-| Academic Atelier | Atlas, Lyra | Lavender / cream | Rak referensi, meja manuskrip, tumpukan buku, tanaman, lounge baca |
-| Engineering Studio | Axel, Echo, Nova, Pixel | Mint / graphite | Empat meja dual monitor, rak server dengan indikator, figur kecil, arcade |
-| Mission Control | Orion | Amber / slate | Monitor pengawasan, meja supervisor, rak arsip, ruang obrolan |
-| Observatory | Mira | Powder blue / navy | Globe, referensi, ruang membaca, workstation riset |
+| Academic Atelier | Izuku Midoriya, Choso | Lavender / cream | Rak referensi, meja manuskrip, tumpukan buku, tanaman, lounge baca |
+| Engineering Studio | Levi Ackerman, EMIYA, Eren Yeager, Shinei Nouzen | Mint / graphite | Empat meja dual monitor, rak server dengan indikator, figur kecil, arcade |
+| Mission Control | Artoria Pendragon | Amber / slate | Monitor pengawasan, meja supervisor, rak arsip, ruang obrolan |
+| Observatory | Cú Chulainn | Powder blue / navy | Globe, referensi, ruang membaca, workstation riset |
 
 Setiap ruangan mendapat beanbag, arcade, dispenser, meja kopi, karpet, dan tanaman. Jitter dekorasi memakai seed tetap: tampilannya bervariasi tetapi tidak berubah mendadak saat render. Barang padat dan dinding berbagi data footprint dengan sistem navigasi. Kursi dan bagian depan beanbag adalah zona duduk yang sengaja bisa dimasuki.
 

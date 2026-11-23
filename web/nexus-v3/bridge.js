@@ -13,6 +13,8 @@ const mounts=new WeakMap();
 export function mountLivingOffice({container,projectState=s=>s,onSelect,quality='balanced',onError=console.error}){
  if(mounts.has(container))return mounts.get(container);
  let view;try{view=new NexusLivingView(container,{quality,onSelect});}catch(e){onError(e);throw e;}
- const api={view,update(raw){try{view.update(validateState(projectState(raw)));return true;}catch(e){view.setConnection('Integrasi state perlu diperiksa');onError(e);return false;}},setActive:v=>view.setActive(v),setTime:v=>view.setTime(v),setMotion:v=>view.setMotion(v),home:v=>view.home(v),setFacts:v=>view.setFacts(v),disconnect:()=>view.setConnection('Koneksi terputus · state terakhir'),dispose(){view.dispose();mounts.delete(container);}};
+ const api={view,update(raw){try{view.update(validateState(projectState(raw)));return true;}catch(e){view.setConnection('Integrasi state perlu diperiksa');onError(e);return false;}},setActive:v=>view.setActive(v),setTime:v=>view.setTime(v),setMotion:v=>view.setMotion(v),home:v=>view.home(v),setFacts:v=>view.setFacts(v),disconnect:()=>view.setConnection('Koneksi terputus · state terakhir'),
+ setParticles:v=>view.setParticles(v),setAmbient:v=>view.setAmbient(v),setSpeed:v=>view.setSpeed(v),setZoomLevel:v=>view.setZoomLevel(v),setHover:v=>view.setHover(v),setFollow:v=>view.setFollow(v),focusAgent:v=>view.focusAgent(v),select:v=>view.select(v),stats:()=>view.stats(),
+ dispose(){view.dispose();mounts.delete(container);}};
  mounts.set(container,api);return api;
 }

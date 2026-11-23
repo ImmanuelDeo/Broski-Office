@@ -16,7 +16,7 @@ Ditinjau pada 21 Oktober 2026.
 
 Creative Studio adalah adaptasi mekanisme, bukan port source upstream yang identik. Runtime asli menggunakan Claude Code dan memory MCP JSONL. Runtime paket ini menggunakan scheduler Python, profil Hermes, snapshot read-only, notes SQLite dan MCP bridge. Upstream tetap dipakai untuk tools media setelah diambil oleh instalasi lokal. Batas izin .claude/settings.json tidak otomatis berlaku pada Hermes; profil Hermes harus dikonfigurasi tersendiri.
 
-Research, Engineering dan Operations adalah contoh tim tambahan buatan paket ini, bukan nama tim yang diklaim ada di video. Nama Nova/Pixel/Sage dan karakter lainnya juga rancangan awal. Semua label dapat diedit.
+Research, Engineering dan Operations adalah contoh tim tambahan buatan paket ini, bukan nama tim yang diklaim ada di video. Nama Eren Yeager/Shinei Nouzen/Sage dan karakter lainnya juga rancangan awal. Semua label dapat diedit.
 
 ## Belum dapat dinyatakan terverifikasi
 

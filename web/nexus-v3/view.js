@@ -22,6 +22,16 @@ export class NexusLivingView {
   this.mode = 'auto';
   this.motion = true;
   this.ready = false;
+  this.hoverId = null;
+  this.selectedId = null;
+  this.react = new Map();
+  this.props = {particles: 70, ambient: 65, speed: 100, hover: true, follow: false};
+  this.fps = 0;
+  this.fpsAcc = 0;
+  this.fpsFrames = 0;
+  this.zoomBase = 0;
+  this.tmpTarget = new T.Vector3();
+  this.tmpCam = new T.Vector3();
   this.memoryBytes = null;
   this.bubbles = [];
   this.labels = [];
@@ -239,13 +249,25 @@ export class NexusLivingView {
   this.renderer.domElement.addEventListener('webglcontextrestored', this.restored);
 
   this.down = e => { this.pointerStart = [e.clientX, e.clientY]; };
+  this.move = e => {
+    if (!this.props.hover) return;
+    const rect = container.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const hits = this.labels.filter(l => l.id && l.screen && Math.hypot(l.screen[0] - x, l.screen[1] - y) < 40);
+    const id = hits[0]?.id || null;
+    if (id !== this.hoverId) {
+      if (id) this.react.set(id, 0.12);
+      this.hoverId = id;
+      this.wake();
+    }
+  };
   this.up = e => {
     if (!this.pointerStart || Math.hypot(e.clientX - this.pointerStart[0], e.clientY - this.pointerStart[1]) > 5) return;
     const rect = container.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
     const hits = this.labels.filter(l => l.id && l.screen && Math.hypot(l.screen[0] - x, l.screen[1] - y) < 40);
-    if (hits[0]) onSelect(hits[0].id);
+    if (hits[0]) { onSelect(hits[0].id); this.select(hits[0].id); }
   };
   this.renderer.domElement.addEventListener('pointerdown', this.down);
+  this.renderer.domElement.addEventListener('pointermove', this.move);
   this.renderer.domElement.addEventListener('pointerup', this.up);
 
   this.resize();
@@ -447,6 +469,45 @@ export class NexusLivingView {
   this.wake();
  }
 
+ setParticles(v) { this.props.particles = clamp(Number(v) || 0, 0, 100); this.wake(); }
+ setAmbient(v) { this.props.ambient = clamp(Number(v) || 0, 0, 100); this.wake(); }
+ setSpeed(v) { this.props.speed = clamp(Number(v) || 0, 0, 200); this.wake(); }
+ setZoomLevel(v) {
+  const z = clamp(Number(v) || 100, 20, 400) / 100;
+  this.camera.zoom = z;
+  this.camera.updateProjectionMatrix();
+  this.wake();
+ }
+ setHover(on) { this.props.hover = Boolean(on); if (!on) this.hoverId = null; this.wake(); }
+ setFollow(on) { this.props.follow = Boolean(on); this.wake(); }
+ select(id) {
+  if (!this.avatars.has(id)) return;
+  this.selectedId = id;
+  this.react.set(id, 0.0001);
+  this.wake();
+ }
+ focusAgent(id) {
+  if (!this.avatars.has(id)) return;
+  this.selectedId = id;
+  const a = this.sim.agents.find(x => x.id === id);
+  if (a) {
+    this.controls.target.set(a.p[0], 1.2, a.p[1]);
+    this.camera.position.set(a.p[0] + 18, 16, a.p[1] + 26);
+    this.camera.lookAt(this.controls.target);
+  }
+  this.react.set(id, 0.0001);
+  this.wake();
+ }
+ stats() {
+  return {
+    fps: Math.round(this.fps),
+    agents: this.sim.agents.length,
+    draws: this.renderer.info.render.calls,
+    triangles: this.renderer.info.render.triangles,
+    selected: this.selectedId || ''
+  };
+ }
+
  setTime(mode) {
   if (!['auto', 'morning', 'evening', 'night'].includes(mode)) throw new Error('Unknown time mode');
   this.mode = mode;
@@ -578,18 +639,42 @@ export class NexusLivingView {
 
   const dt = this.last ? Math.min((ms - this.last) / 1000, 0.1) : 0.016;
   this.last = ms;
+  this.fpsAcc += dt; this.fpsFrames++;
+  if (this.fpsAcc >= 0.5) { this.fps = this.fpsFrames / this.fpsAcc; this.fpsAcc = 0; this.fpsFrames = 0; }
 
   if (this.motion && !this.reduced.matches) {
-    this.time += dt;
-    this.sim.tick(dt);
+    this.time += dt * (this.props.speed / 100);
+    this.sim.tick(dt * (this.props.speed / 100));
   }
+
+  for (const [id, v] of this.react) {
+    const next = v - dt;
+    if (next <= 0) this.react.delete(id); else this.react.set(id, next);
+  }
+
+  // Responsive environment brightness from the properties slider.
+  const amb = clamp(this.props.ambient / 100, 0, 1);
+  this.hemi.intensity = (this.hemi.intensity || 2.2) * 0.9 + (0.6 + amb * 2.4) * 0.1;
 
   // Smooth V2 time-of-day transitions
   this.environment(dt);
 
   // Character poses & brain rotation
   for (const a of this.sim.agents) {
-    poseAvatar(this.avatars.get(a.id), a, this.time, !this.motion || this.reduced.matches);
+    const rig = this.avatars.get(a.id);
+    poseAvatar(rig, a, this.time, !this.motion || this.reduced.matches);
+    if (rig && this.motion && !this.reduced.matches) {
+      const react = this.react.get(a.id) || 0;
+      const hover = this.props.hover && this.hoverId === a.id ? 1 : 0;
+      const energy = Math.max(react > 0 ? react / 0.4 : 0, hover);
+      if (energy > 0) {
+        rig.root.scale.setScalar(1 + 0.06 * energy);
+        rig.root.rotation.z = Math.sin(this.time * 16) * 0.05 * energy;
+      } else {
+        rig.root.scale.setScalar(1);
+        rig.root.rotation.z = 0;
+      }
+    }
   }
   this.brain.rotation.y = this.motion && !this.reduced.matches ? Math.sin(this.time * 0.3) * 0.1 : 0;
 
@@ -614,9 +699,10 @@ export class NexusLivingView {
         beam.material.opacity = 0.6 * (1 - t);
       }
     
-      // Particle burst along the beam path
-      for (let j = 0; j < 4; j++) {
-        const particleIndex = (i * 4 + j) % this.particlePool.length;
+      // Particle burst along the beam path (density from properties slider)
+      const burst = Math.round(1 + this.props.particles / 100 * 5);
+      for (let j = 0; j < burst; j++) {
+        const particleIndex = (i * 8 + j) % this.particlePool.length;
         const m = this.particlePool[particleIndex];
         if (m) {
           const pt = clamp(t - j * 0.08, 0, 1);
@@ -634,6 +720,14 @@ export class NexusLivingView {
     });
 
   // Controls damping & render
+  if (this.props.follow && this.selectedId) {
+    const a = this.sim.agents.find(x => x.id === this.selectedId);
+    if (a) {
+      const k = 1 - Math.exp(-dt * 3);
+      this.controls.target.lerp(this.tmpTarget.set(a.p[0], 1.2, a.p[1]), k);
+      this.camera.position.lerp(this.tmpCam.set(a.p[0] + 18, 16, a.p[1] + 26), k * 0.5);
+    }
+  }
   this.controls.update();
   if (this.renderer.shadowMap.enabled) {
     this.shadowTick = (this.shadowTick || 0) + 1;

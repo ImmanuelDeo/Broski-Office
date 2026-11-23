@@ -64,6 +64,7 @@ function switchView(name) {
   if (name === 'brain') loadBrain();
   if (name === 'tasks') renderTasks();
   if (name === 'activity') renderActivity();
+  if (name === 'hermes') loadHermes();
   
   // Pause/resume 3D view based on visibility
   if (nexusView) {
@@ -260,6 +261,23 @@ $('quality-mode').onchange = e => {
   nexusView.setMotion($('motion').getAttribute('aria-pressed') === 'true');
 };
 
+$('props-toggle').onclick = () => {
+  const open = $('props-toggle').getAttribute('aria-expanded') !== 'true';
+  $('props-toggle').setAttribute('aria-expanded', String(open));
+  $('props-panel').hidden = !open;
+};
+for (const [id, method, scale] of [
+  ['prop-particles', 'setParticles', 1], ['prop-ambient', 'setAmbient', 1],
+  ['prop-speed', 'setSpeed', 1], ['prop-zoom', 'setZoomLevel', 1]
+]) $(id).oninput = e => nexusView?.[method]?.(Number(e.target.value) * scale);
+$('prop-hover').onchange = e => nexusView?.setHover(e.target.checked);
+$('prop-follow').onchange = e => nexusView?.setFollow(e.target.checked);
+setInterval(() => {
+  if (!nexusView || $('props-panel').hidden) return;
+  const s = nexusView.stats?.();
+  if (s) $('prop-stats').textContent = `${s.fps} fps · ${s.agents} agen · ${s.draws} draw · ${s.selected || 'tidak ada pilihan'}`;
+}, 1000);
+
 function renderTeams() {
   let root = $('team-strip');
   root.replaceChildren();
@@ -358,6 +376,16 @@ function renderInspector() {
       inspectorRow('Profil', a.profile),
       inspectorRow('Tahap', a.stage)
     );
+    const actions = E('div', 'inspector-actions');
+    actions.append(
+      button('⌖ Fokus di kantor', () => { switchView('office'); nexusView?.focusAgent(a.id); }),
+      button('✦ Tanya di Hermes', () => {
+        switchView('hermes');
+        $('hermes-prompt').value = `Konteks agen ${a.name} (${a.role}, tim ${t.name}, profil ${a.profile}). `;
+        $('hermes-prompt').focus();
+      })
+    );
+    root.append(actions);
     if (task) {
       root.append(inspectorRow('Progres', task.progress + '%'), E('p', '', task.message), button('Lihat tugas ↗', () => showRun(task.run_id), 'wide'));
     } else {
@@ -491,6 +519,103 @@ $('help').onclick = () => {
     ['5. Batas implementasi', 'Kantor memakai model 3D prosedural. Kemiripan dengan video belum terverifikasi karena video tidak dapat diakses saat pembuatan. Tool-level telemetry Hermes tidak disadap: progres berasal dari milestone MCP atau status proses.']
   ]) root.append(E('h3', '', h), E('p', 'callout', p));
   $('detail-dialog').showModal();
+}
+
+// Hermes console
+let hermesBusy = false;
+function hRow(label, value) {
+  let row = E('div', 'console-row');
+  row.append(E('span', '', label), E('b', '', value ?? '—'));
+  return row;
+}
+function hLog(kind, text) {
+  let log = $('hermes-log'), empty = log.querySelector('.console-empty');
+  if (empty) empty.remove();
+  let el = E('div', 'console-msg ' + kind);
+  el.append(E('small', '', new Date().toLocaleTimeString('id-ID')), E('pre', '', text));
+  log.append(el);
+  log.scrollTop = log.scrollHeight;
+  return el;
+}
+function renderHermes(d) {
+  $('hermes-badge').textContent = d.available ? 'CLI siap' : 'CLI tidak ada';
+  $('hermes-badge').classList.toggle('warn', !d.available);
+  if (!d.available) {
+    $('hermes-status').replaceChildren(E('p', 'empty', d.error || 'Hermes CLI tidak ditemukan di mesin ini.'));
+    return;
+  }
+  const modelLine = (d.status || []).find(x => /model|provider/i.test(x)) || '';
+  $('hermes-model').textContent = modelLine.replace(/^\s*[-·]\s*/, '').slice(0, 90) || 'model dari config';
+  let st = $('hermes-status');
+  st.replaceChildren(hRow('Versi', d.version || '—'), hRow('Diperbarui', new Date(d.fetched_at * 1000).toLocaleTimeString('id-ID')));
+  for (const line of (d.status || []).slice(0, 10)) st.append(E('p', 'console-line', line));
+  let cron = $('hermes-cron');
+  cron.replaceChildren();
+  const cronLines = (d.cron || []).filter(l => !/^usage:/i.test(l));
+  if (!cronLines.length) cron.append(E('p', 'empty', 'Tidak ada job terjadwal.'));
+  for (const line of cronLines.slice(0, 8)) cron.append(E('p', 'console-line', line));
+  let kb = $('hermes-kanban');
+  kb.replaceChildren();
+  if (!d.kanban?.length) kb.append(...(d.kanban_text || ['Tidak ada task.']).slice(0, 6).map(l => E('p', 'console-line', l)));
+  for (const t of d.kanban || []) {
+    let row = E('div', 'console-kanban');
+    row.append(E('b', '', t.title || t.id), E('span', 'chip ' + (t.status || ''), t.status || '—'));
+    kb.append(row);
+  }
+  let ses = $('hermes-sessions'), sel = $('hermes-session');
+  ses.replaceChildren(); sel.replaceChildren(new Option('Sesi baru', ''));
+  const lines = (d.sessions || []).filter(l => !/^usage:/i.test(l));
+  if (!lines.length) ses.append(E('p', 'empty', 'Belum ada sesi.'));
+  for (const line of lines.slice(0, 8)) {
+    ses.append(E('p', 'console-line', line));
+    const m = line.match(/([0-9a-f]{8,}|[0-9]{8}_[0-9]{6}_[0-9a-f]+)/);
+    if (m) sel.append(new Option(line.slice(0, 64), m[1]));
+  }
+}
+async function loadHermes(force = false) {
+  $('hermes-badge').textContent = '…';
+  try { renderHermes(await api('/hermes/overview' + (force ? '?refresh=1' : ''))); }
+  catch (e) { $('hermes-badge').textContent = 'Gagal'; toast(e.message); }
+}
+$('hermes-refresh').onclick = () => loadHermes(true);
+$('hermes-clear').onclick = () => $('hermes-log').replaceChildren(E('div', 'console-empty', 'Transkrip dibersihkan. Sesi Hermes tidak berubah.'));
+$('hermes-override').onchange = e => { $('hermes-model-input').disabled = !e.target.checked; };
+$('hermes-form').onsubmit = async e => {
+  e.preventDefault();
+  const prompt = $('hermes-prompt').value.trim();
+  if (!prompt || hermesBusy) return;
+  hermesBusy = true;
+  const btn = $('hermes-form').querySelector('button[type=submit]');
+  btn.disabled = true; btn.textContent = 'Berjalan…';
+  hLog('user', prompt);
+  const pending = hLog('pending', 'Menjalankan Hermes…');
+  const modelInput = $('hermes-override').checked ? $('hermes-model-input').value.trim() : '';
+  const [provider, model] = modelInput.includes('/') ? modelInput.split('/', 2) : ['', modelInput];
+  try {
+    let r = await api('/hermes/chat', {prompt, resume: $('hermes-session').value || undefined, model: model || undefined, provider: provider || undefined});
+    pending.remove();
+    hLog('assistant', r.text || '(tanpa keluaran)');
+  } catch (err) {
+    pending.remove();
+    hLog('error', err.message);
+  } finally {
+    hermesBusy = false; btn.disabled = false; btn.textContent = 'Kirim ↵';
+    loadHermes(true);
+  }
+};
+$('hermes-prompt').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) $('hermes-form').requestSubmit();
+});
+for (const b of document.querySelectorAll('[data-hermes-act]')) {
+  b.onclick = async () => {
+    const out = $('hermes-output');
+    out.hidden = false; out.textContent = 'Menjalankan ' + b.dataset.hermesAct + '…';
+    try {
+      const r = await api('/hermes/act', {action: b.dataset.hermesAct});
+      out.textContent = r.text || '(selesai tanpa keluaran)';
+    } catch (e) { out.textContent = e.message; }
+    loadHermes(true);
+  };
 }
 
 refresh();

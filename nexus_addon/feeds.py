@@ -1,5 +1,5 @@
 """Bounded RSS/Atom collection from configured public HTTPS domains.
-Feed entries are leads for Mira, never automatically labelled verified fun facts.
+Feed entries are leads for Cú Chulainn, never automatically labelled verified fun facts.
 """
 import hashlib
 import html

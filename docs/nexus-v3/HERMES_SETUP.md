@@ -36,20 +36,20 @@ Gunakan `config/nexus-v3/roster.json` sebagai spesifikasi, bukan pengganti selur
 
 | ID lama yang dipertahankan | Nama | Tim aktif | Peran baru | Profil |
 |---|---|---|---|---|
-| analyst | Atlas | reports | Peneliti/penulis laporan | office-atlas |
-| research-review | Lyra | reports | Metodologi/editor/reviewer akademik | office-lyra |
-| builder | Axel | engineering | Software engineer | office-axel |
-| code-review | Echo | engineering | QA/technical reviewer | office-echo |
-| editor-1 | Nova | engineering | ML/data engineer | office-nova |
-| editor-2 | Pixel | engineering | Systems/integration engineer | office-pixel |
-| planner | Orion | supervision | Supervisor lintas tim | office-orion |
-| ops-review | Mira | intelligence | Pencarian/scraping harian | office-mira |
+| analyst | Izuku Midoriya | reports | Peneliti/penulis laporan | office-atlas |
+| research-review | Choso | reports | Metodologi/editor/reviewer akademik | office-lyra |
+| builder | Levi Ackerman | engineering | Software engineer | office-axel |
+| code-review | EMIYA | engineering | QA/technical reviewer | office-echo |
+| editor-1 | Eren Yeager | engineering | ML/data engineer | office-nova |
+| editor-2 | Shinei Nouzen | engineering | Systems/integration engineer | office-pixel |
+| planner | Artoria Pendragon | supervision | Supervisor lintas tim | office-orion |
+| ops-review | Cú Chulainn | intelligence | Pencarian/scraping harian | office-mira |
 
 `brand`/Sage menjadi nonaktif/arsip; jangan hapus profil, run, task, notes, atau sejarahnya. Team IDs creative/research/operations lama boleh tetap ada dalam arsip tetapi tidak muncul sebagai tim aktif. Task historis menyimpan team/role/agent snapshot saat run dibuat. Migrate tampilan inspector, counters, form submit, routing dan validasi backend bersama; mengganti label frontend saja tidak memenuhi permintaan.
 
 Prompt baru berada di `prompts/nexus-v3/<agent-id>.md`. Sesuaikan metadata prompt dengan loader asli. Cek `hermes --help` dan command yang sudah dipakai proyek sebelum mengubah pengaturan profil; paket ini tidak mengasumsikan subcommand pembuatan profil. Semua profil tetap isolated dan tidak mewarisi cron/channel global.
 
-Routing reviewer: laporan → Lyra; IT → Echo; hasil Mira → Orion. Orion mengawasi seluruh tim dan menangani recovery; bukan agen tambahan. Jika stage scheduler hanya worker/reviewer, perluas registry dengan supervisor atau map ke fungsi supervisor eksplisit. Jangan otomatis memasukkan supervisor ke round-robin worker. Reviewer tidak mereview hasilnya sendiri; jika Echo/Lyra mendapat task produksi, Orion menjadi reviewer untuk task itu. Pertahankan human approval final dan review memory notes.
+Routing reviewer: laporan → Choso; IT → EMIYA; hasil Cú Chulainn → Artoria Pendragon. Artoria Pendragon mengawasi seluruh tim dan menangani recovery; bukan agen tambahan. Jika stage scheduler hanya worker/reviewer, perluas registry dengan supervisor atau map ke fungsi supervisor eksplisit. Jangan otomatis memasukkan supervisor ke round-robin worker. Reviewer tidak mereview hasilnya sendiri; jika EMIYA/Choso mendapat task produksi, Artoria Pendragon menjadi reviewer untuk task itu. Pertahankan human approval final dan review memory notes.
 
 ## 3. Pasang view v3 tanpa renderer ganda
 
@@ -87,7 +87,7 @@ Routing reviewer: laporan → Lyra; IT → Echo; hasil Mira → Orion. Orion men
 1. Impor `nexus_addon.supervisor.Supervisor`; buat satu instance per scheduler owner, DB `.runtime/nexus-v3-addon.db`.
 2. Implementasikan dua callback adapter pada `STATE_CONTRACT.md`. Gunakan transaksi database scheduler asli untuk idempotency key + attempt creation. Tambahkan unique index pada key melalui migrasi baru yang memiliki rollback, jangan membuang schema/data lama.
 3. Di tick/event failure, buat task snapshot yang telah diverifikasi, panggil observe. Dispatch request due lewat scheduler lama. Liveness wajib diperiksa kembali pada dispatch, bukan hanya ketika observe.
-4. Keputusan inspect/escalate menghasilkan event dan task supervisi deduped kepada Orion. Retry tidak boleh berjalan saat cancel, approval pending, process owner tidak jelas, atau checkpoint belum valid.
+4. Keputusan inspect/escalate menghasilkan event dan task supervisi deduped kepada Artoria Pendragon. Retry tidak boleh berjalan saat cancel, approval pending, process owner tidak jelas, atau checkpoint belum valid.
 5. Checkpoint harus menunjuk data yang benar-benar tersimpan: tujuan asli, subtask selesai, output path/hash, langkah tersisa, side-effect ledger. Gunakan continuation prompt dan task ID sama dengan attempt baru. Jangan sekadar mengirim kata “lanjutkan”.
 6. Pada restart, rekonsiliasi entry dispatching/uncertain dengan receipt durable. Jika status belum jelas, tahan dan laporkan. Jangan reset counter untuk menghindari batas retry.
 7. Heartbeat threshold awal 180 detik hanya untuk inspeksi. Sesuaikan dengan operasi panjang yang sah; training ML tidak otomatis dianggap macet karena belum menulis output.
@@ -97,11 +97,11 @@ Routing reviewer: laporan → Lyra; IT → Echo; hasil Mira → Orion. Orion men
 Gunakan coordinator yang sudah disediakan: `AddonRuntime(project_root, adapter).start()` setelah ownership scheduler lama terverifikasi, dan `stop()` pada shutdown. Implementasikan semua callback di bagian coordinator `STATE_CONTRACT.md`; ini menjadi satu tempat untuk recovery, jadwal dan refresh, bukan tiga timer browser terpisah. Jangan menjalankan coordinator ini sekaligus dengan tick manual kedua.
 
 - Buat satu tick background pada backend/scheduler untuk `DailySchedules`, bukan timer browser. Browser boleh ditutup tanpa menghentikan jadwal jika server tetap berjalan.
-- Topik harian belum diberikan pengguna. Biarkan job pencarian `enabled:false` sampai topik disetel melalui konfigurasi/form existing. Sesudah topik disetel, simpan timezone/jam dan gunakan `stage` + `dispatch(enqueue_once)`; request diarahkan ke Mira.
-- Mira memakai `collect_research.py` untuk seed RSS/Atom dan tools pencarian Hermes untuk cakupan tambahan. Feed hanyalah daftar awal, ketersediaannya harus diperiksa lokal. Hasil collector menyimpan URL, tanggal, status lead, dan error per sumber.
+- Topik harian belum diberikan pengguna. Biarkan job pencarian `enabled:false` sampai topik disetel melalui konfigurasi/form existing. Sesudah topik disetel, simpan timezone/jam dan gunakan `stage` + `dispatch(enqueue_once)`; request diarahkan ke Cú Chulainn.
+- Cú Chulainn memakai `collect_research.py` untuk seed RSS/Atom dan tools pencarian Hermes untuk cakupan tambahan. Feed hanyalah daftar awal, ketersediaannya harus diperiksa lokal. Hasil collector menyimpan URL, tanggal, status lead, dan error per sumber.
 - `facts_refresh` adalah pengaturan untuk tick yang perlu dihubungkan: jalankan `refresh_facts.py` sekali sehari pada 07:30 Asia/Jakarta melalui job background deduped tanggal, maksimal dua HTTP request. Tidak memerlukan invocation LLM berulang untuk seed facts. Bila laptop mati, jalankan refresh hari ini setelah startup.
 - Simpan cache di `.runtime`, expose hanya subset fakta publik melalui endpoint authenticated/same-origin yang mengikuti validasi Host/Origin lama. Jangan expose seluruh folder `.runtime` melalui static router.
-- Pertahankan cache jika pengambilan gagal. Panggil `setFacts` hanya dengan record yang lolos review/TTL. Untuk kandidat baru dari Mira gunakan review Orion sebelum mengubah cache. Jangan menyebut headline mentah sebagai fakta valid.
+- Pertahankan cache jika pengambilan gagal. Panggil `setFacts` hanya dengan record yang lolos review/TTL. Untuk kandidat baru dari Cú Chulainn gunakan review Artoria Pendragon sebelum mengubah cache. Jangan menyebut headline mentah sebagai fakta valid.
 
 ## 6. Verifikasi sebelum mengaktifkan
 
