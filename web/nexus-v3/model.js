@@ -3,12 +3,12 @@ export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
 export function timePalette(hour){
  const keys=[
-  {h:0,sky:'#0c142b',fog:'#142236',sun:'#88afff',intensity:.55,ambient:1,windows:1},
+  {h:0,sky:'#141d33',fog:'#1b2840',sun:'#9db8e8',intensity:.9,ambient:1.6,windows:1},
   {h:6,sky:'#a2bfcd',fog:'#b9c9cb',sun:'#ffe2b1',intensity:2.5,ambient:1.9,windows:.1},
-  {h:12,sky:'#b7cfd8',fog:'#aec8ce',sun:'#fff2d7',intensity:2.6,ambient:2,windows:0},
-  {h:17,sky:'#b6909e',fog:'#c4a2a7',sun:'#ffc28c',intensity:2.3,ambient:1.7,windows:.55},
-  {h:20,sky:'#0c142b',fog:'#142236',sun:'#88afff',intensity:.55,ambient:1,windows:1},
-  {h:24,sky:'#0c142b',fog:'#142236',sun:'#88afff',intensity:.55,ambient:1,windows:1}
+  {h:12,sky:'#c6cec0',fog:'#bcc7bd',sun:'#fff2d7',intensity:2.6,ambient:2,windows:0},
+  {h:17,sky:'#c79a80',fog:'#cba98f',sun:'#ffc28c',intensity:2.3,ambient:1.7,windows:.55},
+  {h:20,sky:'#141d33',fog:'#1b2840',sun:'#9db8e8',intensity:.9,ambient:1.6,windows:1},
+  {h:24,sky:'#141d33',fog:'#1b2840',sun:'#9db8e8',intensity:.9,ambient:1.6,windows:1}
  ];
  hour=((hour%24)+24)%24;let i=0;while(keys[i+1].h<hour)i++;return {a:keys[i],b:keys[i+1],t:(hour-keys[i].h)/(keys[i+1].h-keys[i].h)};
 }
@@ -76,7 +76,7 @@ export class Navigation {
 export class OfficeSimulation {
   constructor(layout=createLayout(),seed=92){
     this.layout=layout;this.nav=new Navigation(layout);this.random=random(seed);this.time=0;this.claims=new Map();this.nextChat=8;this.onChat=()=>{};
-    this.agents=AGENTS.map((a,i)=>{const seat=layout.seats.find(s=>s.id===a.id);return {...a,p:[seat.x,seat.z],yaw:Math.PI,seat,mode:'idle',busy:false,route:[],until:2+i*1.3,goal:null};});
+    this.agents=AGENTS.map((a,i)=>{const seat=layout.seats.find(s=>s.id===a.id);return {...a,p:[seat.x,seat.z],yaw:Math.PI,seat,mode:'idle',busy:false,route:[],until:2+i*1.3,goal:null,phase:i*1.37};});
   }
   release(a){if(a.goal)this.claims.delete(a.goal.id);a.goal=null;}
   go(a,target,mode,duration=10){const route=this.nav.path(a.p,target.p);if(!route)return false;this.release(a);a.route=route;a.goal={...target,mode,duration};if(target.id)this.claims.set(target.id,a.id);a.mode='walk';return true;}

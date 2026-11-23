@@ -1,5 +1,5 @@
 import {AGENTS, TEAMS, SKINS} from './nexus-v3/roster.js';
-import {NexusLivingView} from './nexus-v3/view.js';
+import {mountLivingOffice} from './nexus-v3/bridge.js';
 
 const $ = id => document.getElementById(id);
 const E = (tag, cls, text) => {
@@ -97,39 +97,58 @@ async function refresh() {
         $('review-count').textContent = state.runs.filter(r => r.status === 'awaiting_approval').length + state.memory.pending;
         $('footer-status').textContent = 'Runtime connected · ' + state.max_parallel + ' parallel workers · ' + date(state.server_time);
 
-        // Initialize NexusLivingView on first successful refresh
+        // Initialize the living office once, then feed it projected state.
         if (!nexusView) {
           const viewport = $('office-viewport');
           if (viewport) {
-            nexusView = new NexusLivingView(viewport, {quality: 'balanced'});
-            // Make it accessible globally for debugging
+            nexusView = mountLivingOffice({
+              container: viewport,
+              quality: 'balanced',
+              projectState: projectOfficeState,
+              onSelect: id => {
+                if (id === 'brain') choose('brain', 'brain');
+                else if (TEAMS.some(t => t.id === id)) choose('team', id);
+                else choose('agent', id);
+              },
+              onError: e => console.error('Living office:', e)
+            });
             window.nexusView = nexusView;
           }
         }
-
-        // Update the view with current state
-        if (nexusView) {
-          nexusView.update(state);
-        }
+        if (nexusView) nexusView.update(state);
 
         renderTeams();
+        renderAgents();
         renderInspector();
         $('recent').replaceChildren(...state.events.slice(0, 5).map(eventEl));
         if (view === 'tasks') renderTasks();
         if (view === 'activity') renderActivity();
 
-        // Ensure video is playing
-        const video = $('live-video');
-        if (video && video.paused) {
-          video.play().catch(() => {});
-        }
       } catch (e) {
     $('connection').textContent = 'OFFLINE';
     $('connection').classList.add('amber');
+    if (nexusView) nexusView.disconnect();
     $('footer-status').textContent = 'Koneksi terputus. Tampilan terakhir dapat kedaluwarsa. ' + e.message;
   } finally {
     polling = false;
   }
+}
+
+// Project the office API state into the canonical living-office state.
+const pulseKinds = new Set(['task.started', 'brain.read', 'snapshot.applied']);
+function projectOfficeState(s) {
+  const busy = new Map();
+  for (const t of s.tasks) {
+    if (t.status === 'running') busy.set(t.agent, 'running');
+    else if (t.status === 'reviewing' && !busy.has(t.agent)) busy.set(t.agent, 'reviewing');
+  }
+  return {
+    schema_version: 3,
+    connected: true,
+    memory_bytes: Number.isSafeInteger(s.memory?.bytes) ? s.memory.bytes : null,
+    agents: (s.teams || []).flatMap(t => t.agents || []).map(a => ({id: a.id, status: busy.get(a.id) || 'idle'})),
+    events: (s.events || []).filter(ev => pulseKinds.has(ev.type || ev.kind)).map(ev => ({id: ev.id, type: ev.type || ev.kind, agent_id: ev.agent_id}))
+  };
 }
 
 // --- UI handlers (unchanged from original) ---
@@ -208,6 +227,39 @@ $('memory-search').oninput = () => {
 
 $('refresh-tasks').onclick = refresh;
 
+// Scene controls
+$('camera-home').onclick = () => nexusView?.home(false);
+$('camera-top').onclick = () => nexusView?.home(true);
+$('time-mode').onchange = e => nexusView?.setTime(e.target.value);
+$('motion').onclick = () => {
+  if (!nexusView) return;
+  const on = $('motion').getAttribute('aria-pressed') !== 'true';
+  $('motion').setAttribute('aria-pressed', String(on));
+  $('motion').textContent = on ? 'Ⅱ Motion' : '▶ Motion';
+  nexusView.setMotion(on);
+};
+$('quality-mode').onchange = e => {
+  if (!nexusView) return;
+  const q = e.target.value;
+  // Recreate the view at the chosen quality; state feeds in on the next poll.
+  const viewport = $('office-viewport');
+  nexusView.dispose();
+  nexusView = mountLivingOffice({
+    container: viewport, quality: q,
+    projectState: projectOfficeState,
+    onSelect: id => {
+      if (id === 'brain') choose('brain', 'brain');
+      else if (TEAMS.some(t => t.id === id)) choose('team', id);
+      else choose('agent', id);
+    },
+    onError: err => console.error('Living office:', err)
+  });
+  window.nexusView = nexusView;
+  if (state) nexusView.update(state);
+  nexusView.setTime($('time-mode').value);
+  nexusView.setMotion($('motion').getAttribute('aria-pressed') === 'true');
+};
+
 function renderTeams() {
   let root = $('team-strip');
   root.replaceChildren();
@@ -226,6 +278,27 @@ function renderTeams() {
     b.append(bottom);
     root.append(b);
   }
+}
+
+function renderAgents() {
+  const root = $('agent-strip');
+  if (!root) return;
+  const busy = new Map();
+  for (const t of state.tasks) {
+    if (t.status === 'running') busy.set(t.agent, t);
+    else if (t.status === 'reviewing' && !busy.has(t.agent)) busy.set(t.agent, t);
+  }
+  const frag = document.createDocumentFragment();
+  for (const t of state.teams) for (const a of t.agents) {
+    const task = busy.get(a.id);
+    const b = E('button', 'agent-chip' + (task ? ' working' : ''));
+    b.style.setProperty('--accent', t.color);
+    b.title = a.name + ' · ' + a.role + (task ? ' · ' + task.progress + '%' : ' · siap');
+    b.onclick = () => choose('agent', a.id);
+    b.append(E('i', 'agent-dot'), E('strong', '', a.name), E('small', '', task ? (task.status === 'reviewing' ? 'Review ' : '') + task.progress + '%' : 'Ready'));
+    frag.append(b);
+  }
+  root.replaceChildren(frag);
 }
 
 function inspectorRow(label, value) {
@@ -295,7 +368,7 @@ function renderInspector() {
 
 function eventEl(ev) {
   let el = E('div', 'event');
-  el.append(E('p', '', ev.message), E('time', '', date(ev.ts) + ' · ' + ev.kind));
+  el.append(E('p', '', ev.message), E('time', '', date(ev.ts) + ' · ' + (ev.type || ev.kind || '')));
   return el;
 }
 
